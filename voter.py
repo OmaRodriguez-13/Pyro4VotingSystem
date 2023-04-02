@@ -8,11 +8,10 @@ class Interfaz:
         self.root.title("Sistema de votación")
         self.root.iconbitmap('urna.ico')
         self.root.geometry('250x150')
-        self.num_opciones = int(input("Ingrese el número de opciones para la votación: "))
-        self.candidatos = []
-        for i in range(self.num_opciones):
-            opcion = input(f"Ingrese la opción {i+1}: ")
-            self.candidatos.append(opcion)
+        
+        # Obtener opciones del servidor
+        self.candidatos = self.votacion.obtener_opciones()
+        
         self.seleccion = tk.StringVar()
         self.seleccion.set(self.candidatos[0])
         self.opciones = tk.OptionMenu(self.root, self.seleccion, *self.candidatos)
