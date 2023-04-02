@@ -22,6 +22,7 @@ class Votacion:
     def contar_votos(self):
         return self.votos
     
+    #Establecer y obtener opciones
     @classmethod
     def obtener_opciones(cls):
         return cls.opciones
@@ -29,6 +30,15 @@ class Votacion:
     @classmethod
     def establecer_opciones(cls, opciones):
         cls.opciones = opciones
+
+    #Establecer y obtener tema
+     
+    def establecer_tema(self, tema):
+        self.tema = tema
+    
+    def obtener_tema(self):
+        return self.tema
+
 
 daemon = Pyro4.Daemon()
 uri = daemon.register(Votacion())
@@ -48,7 +58,7 @@ while True:
     if confirmacion.lower() == "n":
         break
 
-# Establecer opciones en el servidor
+# Establecer opciones y tema en el servidor
 Votacion.establecer_opciones(opciones)
 
 daemon.requestLoop()
