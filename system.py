@@ -39,9 +39,11 @@ class Votacion:
     def obtener_tema(self):
         return self.tema
 
-
-daemon = Pyro4.Daemon()
-uri = daemon.register(Votacion())
+# Obtener la dirección IP del servidor
+direccion_ip = Pyro4.socketutil.getInterfaceAddress(input("Ingrese la ip: "))
+daemon = Pyro4.Daemon(host=direccion_ip)
+#daemon = Pyro4.Daemon()
+uri = daemon.register(Votacion(), objectId="obj")
 ns = Pyro4.locateNS()
 ns.register('obj', uri)
 

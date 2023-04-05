@@ -7,7 +7,10 @@ class Interfaz:
         self.root = tk.Tk()
         self.root.title("Sistema de votación")
         self.root.iconbitmap('urna.ico')
-        self.root.geometry('390x300')
+        self.root.geometry('390x500')
+
+        # Hacer que la ventana no sea redimensionable
+        self.root.resizable(False, False)
 
 
         self.Ltema = tk.Label(self.root, text="Tema:", font=("Courier New", 12))
@@ -20,6 +23,9 @@ class Interfaz:
         
         self.seleccion = tk.StringVar()
         self.seleccion.set(self.candidatos[0])
+
+        self.opciones = tk.OptionMenu(self.root, self.seleccion, *self.candidatos)
+        self.opciones.grid(row=1, column=2)
 
         self.boton_votar = tk.Button(self.root, text="Votar", command=self.registrar_voto, width=8)
         self.boton_votar.grid(row=2, column=1, padx=20, pady=10)
