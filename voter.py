@@ -1,5 +1,7 @@
 import Pyro4
 import tkinter as tk
+from tkinter import messagebox, simpledialog
+from tkinter import *
 
 class Interfaz:
     def __init__(self, uri):
@@ -19,7 +21,7 @@ class Interfaz:
         
          # Obtener opciones y tema del servidor
         self.candidatos = self.votacion.obtener_opciones()
-        #self.tema = self.votacion.obtener_tema()
+        self.temav = self.votacion.obtener_tema()
         
         self.seleccion = tk.StringVar()
         self.seleccion.set(self.candidatos[0])
@@ -40,7 +42,7 @@ class Interfaz:
         self.resultados = tk.Label(self.root, text="", font=("Courier New", 11))
         self.resultados.grid(row=4, column=2, pady=10)
 
-        #self.Ltema.config(text="Tema: " + self.tema)
+        self.Ltema.config(text="Tema: " + self.temav)
         self.actualizar_resultados()
 
     def registrar_voto(self):
@@ -66,8 +68,25 @@ class Interfaz:
     def iniciar(self):
         self.root.mainloop()
 
-ns = Pyro4.locateNS()
-uri = ns.lookup('obj')
+
+server_ip = simpledialog.askstring(
+    "Dirección IP del servidor", "Ingrese la dirección IP del servidor:")
+if server_ip is None:
+    # Si el usuario cancela el diálogo, salir del programa
+    exit()
+
+server_port = simpledialog.askstring(
+    "Dirección IP del servidor", "Ingrese el puerto del servidor:")
+if server_ip is None:
+    # Si el usuario cancela el diálogo, salir del programa
+    exit()
+#obj = input("Introduzca lo que falta: ")
+
+#uri = "PYRO:votacion@{obj}"
+uri = f"PYRO:votacion@{server_ip}:{server_port}"
+
+messagebox.showinfo( "URI del SERVIDOR", uri)
+#uri = input("Introduzca la URI del servidor: ")
 
 interfaz = Interfaz(uri)
 interfaz.iniciar()

@@ -1,4 +1,8 @@
 import Pyro4
+import socket
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+from tkinter import *
 
 @Pyro4.expose
 class Votacion:
@@ -32,35 +36,41 @@ class Votacion:
         cls.opciones = opciones
 
     #Establecer y obtener tema
-     
-    def establecer_tema(self, tema):
-        self.tema = tema
+    @classmethod
+    def obtener_tema(cls):
+        return cls.tema 
     
-    def obtener_tema(self):
-        return self.tema
+    @classmethod
+    def establecer_tema(cls, tema):
+        cls.tema = tema
+    
 
-# Obtener la dirección IP del servidor
-direccion_ip = Pyro4.socketutil.getInterfaceAddress(input("Ingrese la ip: "))
-daemon = Pyro4.Daemon(host=direccion_ip)
-#daemon = Pyro4.Daemon()
-uri = daemon.register(Votacion(), objectId="obj")
-ns = Pyro4.locateNS()
-ns.register('obj', uri)
+#ip = Pyro4.socketutil.getInterfaceAddress("192.168.1.103")
+ip = socket.gethostbyname(socket.gethostname())
 
-print("Servidor listo. URI =", uri)
+daemon = Pyro4.Daemon(host=ip)
+
+votacion = Votacion()
+uri = daemon.register(votacion, objectId='votacion')
+
+tema = simpledialog.askstring("Tema de la votación", "Ingrese el tema de la votación: ")
+
+messagebox.showinfo("URI del SERVIDOR", f"Servidor listo. URI= {uri}")
+print("Servidor listo. URI= ", uri)
 
 # Obtener opciones del usuario
 opciones = []
 while True:
-    num_opciones = int(input("Ingrese el número de opciones para la votación: "))
+    num_opciones = simpledialog.askinteger("Votación", "Ingrese el número de opciones para la votación:")
     for i in range(num_opciones):
-        opcion = input(f"Ingrese la opción {i+1}: ")
+        opcion = simpledialog.askstring("Ingresando opciones...", f"Ingrese la opción {i+1}:")
         opciones.append(opcion)
-    confirmacion = input("¿Desea agregar más opciones? (s/n): ")
-    if confirmacion.lower() == "n":
+    confirmacion = messagebox.askquestion("Confirmación", "¿Desea agregar más opciones?")
+    if confirmacion == "no":
         break
 
 # Establecer opciones y tema en el servidor
 Votacion.establecer_opciones(opciones)
+Votacion.establecer_tema(tema)
 
 daemon.requestLoop()
